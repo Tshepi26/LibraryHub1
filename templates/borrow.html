@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Borrow a book{% endblock %}
+{% block head %}<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:4px">🔄 Borrow a book</h2>
+<p class="muted" style="margin-bottom:18px">Scan the barcode on the back cover of the book, then enter the learner's ID. Books are due back after 7 days.</p>
+<div class="grid2">
+  <div class="card">
+    <h3>1. Scan the book's barcode</h3>
+    <p class="muted" style="margin:4px 0 12px">Or type the ISBN on the right.</p>
+    <div id="reader-borrow" class="reader"></div>
+    <button type="button" id="scanBtn" class="btn btn-orange btn-block" style="margin-top:12px">📷 Start camera scanner</button>
+    <p id="scanStatus" class="scan-status" aria-live="polite"></p>
+  </div>
+  <div class="card">
+    <h3>2. Confirm the details</h3>
+    <form method="post" style="margin-top:12px">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field"><label for="barcode">Book code (ISBN)</label>
+        <input id="barcode" name="code" placeholder="13-digit ISBN, e.g. 9780131103627" inputmode="numeric" value="{{ request.form.get('code','') }}" required></div>
+      <div class="field"><label for="studentID">Learner Student ID</label>
+        <input id="studentID" name="studentID" placeholder="e.g. STU-2026-001" value="{{ request.form.get('studentID','') }}" required></div>
+      <button class="btn btn-orange btn-block" type="submit">Confirm borrowing</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='scanner.js') }}"></script>
+<script>setupScanner({button:'scanBtn', reader:'reader-borrow', input:'barcode', status:'scanStatus', next:'studentID'});</script>
+{% endblock %}

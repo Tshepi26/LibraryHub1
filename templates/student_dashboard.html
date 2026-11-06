@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}My library{% endblock %}
+{% block head %}<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>{% endblock %}
+{% block content %}
+{% if welcome %}<div class="welcome-banner"><h3>👋 {{ welcome }}</h3></div>{% endif %}
+<div class="grid2">
+  <div class="card">
+    <h3>📷 Borrow a book</h3>
+    <p class="muted" style="margin:4px 0 12px">Scan the barcode on the back cover of the textbook. It is borrowed for 7 days.</p>
+    <div id="reader-self" class="reader"></div>
+    <button type="button" id="scanBtn" class="btn btn-blue btn-block" style="margin-top:12px">📷 Start camera scanner</button>
+    <p id="scanStatus" class="scan-status" aria-live="polite"></p>
+    <form id="selfForm" method="post" action="{{ url_for('portal.borrow') }}" style="margin-top:8px">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field"><label for="barcode">Or type the ISBN</label><input id="barcode" name="code" placeholder="13-digit ISBN" inputmode="numeric" required></div>
+      <button class="btn btn-dark btn-block" type="submit">Borrow this book</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>📚 My books ({{ mybooks|length }})</h3>
+    <p class="muted" style="margin:4px 0 12px">Return books to the librarian by the due date. Late fine: R{{ fine }} per day.</p>
+    {% for b in mybooks %}
+    <div style="padding:10px 0;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;gap:10px">
+      <div><p style="font-weight:600;font-size:14px">{{ b.title }}</p><p class="small muted">{{ b.accessionNumber }} • {{ b.categoryName }} • due {{ b.dueDate }}</p></div>
+      {% if b.daysLeft < 0 %}<span class="badge badge-red">{{ -b.daysLeft }} day(s) late • R{{ -b.daysLeft * fine }}</span>
+      {% elif b.daysLeft == 0 %}<span class="badge badge-amber">Due today</span>
+      {% else %}<span class="badge badge-green">{{ b.daysLeft }} day(s) left</span>{% endif %}
+    </div>
+    {% else %}<p class="empty">You have no books out. Scan one to borrow it.</p>{% endfor %}
+  </div>
+</div>
+<div class="card">
+  <h3>Available now</h3>
+  <div class="table-wrap"><table>
+    <tr><th>ISBN</th><th>Title</th><th>Author</th><th>Subject</th></tr>
+    {% for b in available %}<tr><td><b>{{ b.isbn or b.accessionNumber }}</b></td><td>{{ b.title }}</td><td>{{ b.author }}</td><td>{{ b.categoryName }}</td></tr>{% endfor %}
+  </table></div>
+  {% if not available %}<p class="empty" style="margin-top:12px">No books are available right now.</p>{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='scanner.js') }}"></script>
+<script>setupScanner({button:'scanBtn', reader:'reader-self', input:'barcode', status:'scanStatus', form:'selfForm', autoSubmit:true});</script>
+{% endblock %}

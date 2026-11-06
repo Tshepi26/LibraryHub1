@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Staff accounts{% endblock %}
+{% block content %}
+<div class="card">
+  <h3>Add a staff account</h3>
+  <p class="muted" style="margin-bottom:14px">Librarians can lend, return and register learners. Admins can also back up and restore the system and manage staff.</p>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="grid4">
+      <div class="field"><label for="username">Username *</label><input id="username" name="username" value="{{ request.form.get('username','') }}" required></div>
+      <div class="field"><label for="fullName">Full name *</label><input id="fullName" name="fullName" value="{{ request.form.get('fullName','') }}" required></div>
+      <div class="field"><label for="role">Role *</label><select id="role" name="role">{% for r in roles %}<option>{{ r }}</option>{% endfor %}</select></div>
+      <div class="field"><label for="password">Password * (8+ characters)</label><input id="password" type="password" name="password" minlength="8" required></div>
+    </div>
+    <button class="btn btn-blue" type="submit">Create account</button>
+  </form>
+</div>
+<div class="card">
+  <h3>Staff accounts ({{ users|length }})</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Username</th><th>Name</th><th>Role</th><th>Set a new password</th></tr>
+    {% for u in users %}
+    <tr><td><b>{{ u.username }}</b></td><td>{{ u.fullName }}</td>
+      <td><span class="badge {{ 'badge-amber' if u.role == 'Admin' else 'badge-green' }}">{{ u.role }}</span></td>
+      <td><form method="post" action="{{ url_for('staff.reset', user_id=u.userID) }}" style="display:flex;gap:8px">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="password" name="password" minlength="8" placeholder="New password" required style="max-width:200px">
+        <button class="btn btn-light btn-sm" type="submit">Save</button></form></td></tr>
+    {% endfor %}
+  </table></div>
+</div>
+{% endblock %}

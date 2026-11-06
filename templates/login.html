@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block body_class %}login{% endblock %}
+{% block content %}
+<div class="login-wrap">
+  <div style="margin-bottom:24px">
+    <h1 style="color:#fff;font-size:28px">📚 LibraryHub</h1>
+    <p style="color:#94a3b8;margin-top:6px;font-size:14px">Automated Library System • Final Year Project</p>
+    <p style="color:#64748b;margin-top:4px;font-size:12px">High school library with QR self-service</p>
+  </div>
+  <div class="login-card" style="text-align:left">
+    <h2 style="font-size:22px">Sign in</h2>
+    <p class="muted" style="margin:8px 0 20px">Staff use their username. Learners use their Student ID and the password the librarian gave them.</p>
+    <form method="post" autocomplete="on">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field"><label for="username">Username or Student ID</label>
+        <input id="username" name="username" placeholder="e.g. STU-2026-001" value="{{ username or '' }}" required autofocus></div>
+      <div class="field"><label for="password">Password</label>
+        <input id="password" type="password" name="password" required></div>
+      <button class="btn btn-blue btn-block" type="submit">Sign in</button>
+    </form>
+  </div>
+  <p style="color:#475569;margin-top:20px;font-size:11px">© 2026 LibraryHub • Final Year Project • Richfield</p>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Backup and restore{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:4px">💾 Backup and restore</h2>
+<p class="muted" style="margin-bottom:18px">Only administrators can see this page. A backup is a full copy of the library database saved as a .sql file.</p>
+<div class="grid2">
+  <div class="card">
+    <h3>Create a backup</h3>
+    <p class="muted" style="margin:4px 0 14px">Saves all books, learners, borrowing records and users. Make one at the end of each day.</p>
+    <form method="post" action="{{ url_for('admin.backup_create') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-green btn-block" type="submit">Back up now</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Restore from an uploaded file</h3>
+    <p class="muted" style="margin:4px 0 14px">This replaces all current data. A safety backup is made first.</p>
+    <form method="post" action="{{ url_for('admin.backup_restore') }}" enctype="multipart/form-data"
+          onsubmit="return confirm('This will replace ALL current library data. Continue?');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field"><label for="file">Backup file (.sql)</label><input id="file" type="file" name="file" accept=".sql" required></div>
+      <div class="field"><label for="c1">Type RESTORE to confirm</label><input id="c1" name="confirm" autocomplete="off" required></div>
+      <button class="btn btn-red btn-block" type="submit">Restore from file</button>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <h3>Saved backups ({{ backups|length }})</h3>
+  <div class="table-wrap"><table>
+    <tr><th>File</th><th>Created</th><th>Size</th><th></th></tr>
+    {% for b in backups %}
+    <tr><td>{{ b.name }}</td><td>{{ b.when }}</td><td>{{ b.kb }} KB</td>
+      <td class="right" style="white-space:nowrap">
+        <a class="btn btn-light btn-sm" href="{{ url_for('admin.backup_download', name=b.name) }}">Download</a>
+        <form class="inline" method="post" action="{{ url_for('admin.backup_restore') }}"
+              onsubmit="var v=prompt('This replaces ALL current data with {{ b.name }}. Type RESTORE to continue:'); if(v!=='RESTORE'){return false;} this.confirm.value=v; return true;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="name" value="{{ b.name }}"><input type="hidden" name="confirm" value="">
+          <button class="btn btn-red btn-sm" type="submit">Restore</button></form></td></tr>
+    {% endfor %}
+  </table></div>
+  {% if not backups %}<p class="empty" style="margin-top:12px">No backups yet. Click "Back up now".</p>{% endif %}
+</div>
+{% endblock %}

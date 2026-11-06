@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Return a book{% endblock %}
+{% block head %}<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:4px">📥 Return a book</h2>
+<p class="muted" style="margin-bottom:18px">Scan the barcode on the returned book. Fines are R2 per day after the due date.</p>
+<div class="grid2">
+  <div class="card">
+    <h3>1. Scan the book's barcode</h3>
+    <div id="reader-return" class="reader" style="margin-top:12px"></div>
+    <button type="button" id="scanBtn" class="btn btn-green btn-block" style="margin-top:12px">📷 Start camera scanner</button>
+    <p id="scanStatus" class="scan-status" aria-live="polite"></p>
+  </div>
+  <div class="card">
+    <h3>2. Confirm the return</h3>
+    <form method="post" style="margin-top:12px">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field"><label for="barcode">Book code (ISBN)</label>
+        <input id="barcode" name="code" placeholder="13-digit ISBN, e.g. 9780131103627" inputmode="numeric" value="{{ request.form.get('code','') }}" required></div>
+      <div class="field"><label for="studentID">Learner Student ID (only needed if several copies are out)</label>
+        <input id="studentID" name="studentID" placeholder="e.g. STU-2026-001" value="{{ request.form.get('studentID','') }}"></div>
+      <div class="field"><label for="condition">Condition of the book</label>
+        <select id="condition" name="condition">{% for c in conditions %}<option>{{ c }}</option>{% endfor %}</select></div>
+      <button class="btn btn-green btn-block" type="submit">Confirm return</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='scanner.js') }}"></script>
+<script>setupScanner({button:'scanBtn', reader:'reader-return', input:'barcode', status:'scanStatus', next:'condition'});</script>
+{% endblock %}

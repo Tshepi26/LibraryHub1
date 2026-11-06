@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Book labels - LibraryHub</title>
+<style>
+body{font-family:Arial,sans-serif;margin:20px;color:#0f172a}
+.bar{margin-bottom:20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.bar button,.bar input{padding:10px 14px;border-radius:8px;font-size:14px}
+.bar button{border:none;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}
+.bar input{border:1px solid #cbd5e1}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.label{border:2px dashed #94a3b8;border-radius:6px;padding:14px;break-inside:avoid;background:#fff}
+.label h4{margin:0 0 2px;font-size:14px}
+.label .meta{font-size:11px;color:#475569;margin-bottom:8px}
+.label .row{display:flex;gap:10px;align-items:center}
+.label .ean{flex:1}
+.label .qr{width:78px;height:78px}
+.label .copy{margin-top:6px;font-size:11px;color:#334155}
+.warn{color:#b45309;font-size:12px}
+@media print{.bar{display:none}body{margin:6mm}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <button onclick="window.print()">🖨️ Print labels</button>
+  <a href="{{ url_for('books.index') }}">← Back to books</a>
+  <form method="get"><input name="q" value="{{ q }}" placeholder="Filter by title, ISBN or copy"> <button type="submit">Filter</button></form>
+  <span>{{ books|length }} label(s). Print at 100% scale, cut along the dashed lines and stick one on each book. The barcode is the same type printed on real books (EAN-13 ISBN).</span>
+</div>
+<div class="grid">
+{% for b in books %}
+<div class="label">
+  <h4>{{ b.title }}</h4>
+  <p class="meta">{{ b.author }}</p>
+  {% if b.svg %}
+  <div class="row"><div class="ean">{{ b.svg }}</div>
+    {% if has_qr %}<img class="qr" src="{{ url_for('books.qr_image', code=b.isbn) }}" alt="QR code for {{ b.isbn }}">{% endif %}</div>
+  <p class="copy">ISBN {{ b.isbn }} • Copy {{ b.accessionNumber }}</p>
+  {% else %}
+  <p class="warn">No ISBN yet for {{ b.accessionNumber }}. Add one on the Books page, then print this label.</p>
+  {% endif %}
+</div>
+{% endfor %}
+</div>
+</body>
+</html>

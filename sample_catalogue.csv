@@ -1,0 +1,41 @@
+isbn,title,author,shelf,subject,copies
+9781999910013,Mathematics Grade 10 Learner's Book (Sample),S. Naidoo,MATH-G10,Mathematics,3
+9781999910020,Mathematics Grade 11 Learner's Book (Sample),P. van der Merwe,MATH-G11,Mathematics,3
+9781999910037,Mathematics Grade 12 Learner's Book (Sample),L. Dlamini,MATH-G12,Mathematics,3
+9781999910044,Mathematics Grade 12 Study Guide (Sample),A. Botha,MATH-G12,Mathematics,2
+9781999910051,Physical Sciences Grade 10 Learner's Book (Sample),N. Khumalo,PHYS-G10,Physical Sciences,3
+9781999910068,Physical Sciences Grade 11 Learner's Book (Sample),M. Pillay,PHYS-G11,Physical Sciences,3
+9781999910075,Physical Sciences Grade 12 Learner's Book (Sample),K. Sithole,PHYS-G12,Physical Sciences,3
+9781999910082,Physical Sciences Grade 12 Study Guide (Sample),T. Mokoena,PHYS-G12,Physical Sciences,2
+9781999910099,Information Technology Grade 10 Learner's Book (Sample),S. Naidoo,INFO-G10,Information Technology,3
+9781999910105,Information Technology Grade 11 Learner's Book (Sample),P. van der Merwe,INFO-G11,Information Technology,3
+9781999910112,Information Technology Grade 12 Learner's Book (Sample),L. Dlamini,INFO-G12,Information Technology,3
+9781999910129,Information Technology Grade 12 Study Guide (Sample),A. Botha,INFO-G12,Information Technology,2
+9781999910136,Life Sciences Grade 10 Learner's Book (Sample),N. Khumalo,LIFE-G10,Life Sciences,3
+9781999910143,Life Sciences Grade 11 Learner's Book (Sample),M. Pillay,LIFE-G11,Life Sciences,3
+9781999910150,Life Sciences Grade 12 Learner's Book (Sample),K. Sithole,LIFE-G12,Life Sciences,3
+9781999910167,Life Sciences Grade 12 Study Guide (Sample),T. Mokoena,LIFE-G12,Life Sciences,2
+9781999910174,Accounting Grade 10 Learner's Book (Sample),S. Naidoo,ACCT-G10,Accounting,3
+9781999910181,Accounting Grade 11 Learner's Book (Sample),P. van der Merwe,ACCT-G11,Accounting,3
+9781999910198,Accounting Grade 12 Learner's Book (Sample),L. Dlamini,ACCT-G12,Accounting,3
+9781999910204,Accounting Grade 12 Study Guide (Sample),A. Botha,ACCT-G12,Accounting,2
+9781999910211,English Grade 10 Learner's Book (Sample),N. Khumalo,ENGL-G10,English,3
+9781999910228,English Grade 11 Learner's Book (Sample),M. Pillay,ENGL-G11,English,3
+9781999910235,English Grade 12 Learner's Book (Sample),K. Sithole,ENGL-G12,English,3
+9781999910242,English Grade 12 Study Guide (Sample),T. Mokoena,ENGL-G12,English,2
+9781999910259,Geography Grade 10 Learner's Book (Sample),S. Naidoo,GEOG-G10,Geography,3
+9781999910266,Geography Grade 11 Learner's Book (Sample),P. van der Merwe,GEOG-G11,Geography,3
+9781999910273,Geography Grade 12 Learner's Book (Sample),L. Dlamini,GEOG-G12,Geography,3
+9781999910280,Geography Grade 12 Study Guide (Sample),A. Botha,GEOG-G12,Geography,2
+9781999910297,History Grade 10 Learner's Book (Sample),N. Khumalo,HIST-G10,History,3
+9781999910303,History Grade 11 Learner's Book (Sample),M. Pillay,HIST-G11,History,3
+9781999910310,History Grade 12 Learner's Book (Sample),K. Sithole,HIST-G12,History,3
+9781999910327,History Grade 12 Study Guide (Sample),T. Mokoena,HIST-G12,History,2
+9781999910334,Business Studies Grade 10 Learner's Book (Sample),S. Naidoo,BUSI-G10,Business Studies,3
+9781999910341,Business Studies Grade 11 Learner's Book (Sample),P. van der Merwe,BUSI-G11,Business Studies,3
+9781999910358,Business Studies Grade 12 Learner's Book (Sample),L. Dlamini,BUSI-G12,Business Studies,3
+9781999910365,Business Studies Grade 12 Study Guide (Sample),A. Botha,BUSI-G12,Business Studies,2
+9781999910372,Economics Grade 10 Learner's Book (Sample),N. Khumalo,ECON-G10,Economics,3
+9781999910389,Economics Grade 11 Learner's Book (Sample),M. Pillay,ECON-G11,Economics,3
+9781999910396,Economics Grade 12 Learner's Book (Sample),K. Sithole,ECON-G12,Economics,3
+9781999910402,Economics Grade 12 Study Guide (Sample),T. Mokoena,ECON-G12,Economics,2

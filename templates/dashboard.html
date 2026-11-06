@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% if welcome %}<div class="welcome-banner"><h3>👋 {{ welcome }}</h3>
+  <p style="opacity:.9;font-size:13.5px;margin-top:4px">{{ 'Administrator dashboard: staff, backups and the whole system.' if session.role == 'Admin' else 'Librarian dashboard: lending, returns and follow-up.' }}</p></div>{% endif %}
+<h2 style="margin-bottom:14px">{{ 'Admin dashboard' if session.role == 'Admin' else 'Librarian dashboard' }}</h2>
+
+<div class="stats">
+  <div class="stat"><p class="muted">Total books</p><h1>{{ total }}</h1><p class="small muted">All textbooks in the library</p></div>
+  <div class="stat"><p class="muted">Borrowed</p><h1 style="color:#2563eb">{{ borrowed }}</h1><p class="small muted">Currently with learners</p></div>
+  <div class="stat"><p class="muted">Available</p><h1 style="color:#0f9d6a">{{ total - borrowed }}</h1><p class="small muted">Ready to borrow</p></div>
+  <div class="stat"><p class="muted">Overdue</p><h1 style="color:#ef4444">{{ overdue }}</h1><p class="small muted">Past due date (R2 per day fine)</p></div>
+  <div class="stat"><p class="muted">Learners</p><h1>{{ students }}</h1><p class="small muted">Registered</p></div>
+  {% if session.role == 'Admin' %}<div class="stat"><p class="muted">Staff accounts</p><h1>{{ staff_count }}</h1><p class="small muted">Admins and librarians</p></div>{% endif %}
+</div>
+
+{% if session.role == 'Admin' %}
+<div class="card">
+  <h3>🛡️ Administration</h3>
+  <p class="muted" style="margin:4px 0 14px">Only administrators see this section.</p>
+  <div class="grid3">
+    <div class="tile"><p class="title">💾 Backup and restore</p>
+      <p class="muted" style="margin-bottom:12px">Last backup: <b>{{ last_backup or 'none yet' }}</b></p>
+      <a class="btn btn-green btn-block" href="{{ url_for('admin.backup') }}">Open backup page</a></div>
+    <div class="tile"><p class="title">👥 Staff accounts</p>
+      <p class="muted" style="margin-bottom:12px">Create librarians and reset their passwords.</p>
+      <a class="btn btn-blue btn-block" href="{{ url_for('staff.index') }}">Manage staff</a></div>
+  </div>
+</div>
+{% else %}
+<div class="card">
+  <h3>⏰ Follow up today</h3>
+  <p class="muted" style="margin:4px 0 12px">Learners with overdue books (oldest first).</p>
+  {% if overdue_list %}
+  <div class="table-wrap"><table>
+    <tr><th>Learner</th><th>Student ID</th><th>Book</th><th>Due</th><th>Days over</th></tr>
+    {% for o in overdue_list %}<tr><td>{{ o.fullName }}</td><td>{{ o.studentID }}</td><td>{{ o.title }}</td><td>{{ o.dueDate }}</td><td><span class="badge badge-red">{{ o.daysOver }}</span></td></tr>{% endfor %}
+  </table></div>
+  <a class="btn btn-light btn-sm" style="margin-top:12px" href="{{ url_for('reports.view', kind='overdue') }}">See the full overdue report</a>
+  {% else %}<p class="empty">Nothing is overdue.</p>{% endif %}
+</div>
+{% endif %}
+
+<div class="card">
+  <h3>Management and reports</h3>
+  <p class="muted" style="margin:4px 0 16px">Everything you need to run the library.</p>
+  <div class="grid3">
+    <div class="tile"><p class="title" style="color:#1e40af">📖 Books</p>
+      <p class="muted" style="margin-bottom:12px">Add textbooks by scanning their ISBN barcode, search the catalogue and print labels.</p>
+      <a class="btn btn-blue btn-block" href="{{ url_for('books.index') }}">Manage books</a></div>
+    <div class="tile"><p class="title" style="color:#0f6a45">👨‍🎓 Learners</p>
+      <p class="muted" style="margin-bottom:12px">Register learners and reset their passwords.</p>
+      <a class="btn btn-green btn-block" href="{{ url_for('students.index') }}">Manage learners</a></div>
+    <div class="tile"><p class="title" style="color:#d97706">🔄 Borrow and return</p>
+      <p class="muted" style="margin-bottom:12px">Scan the book's barcode, enter the learner number, done.</p>
+      <div class="grid2" style="gap:8px"><a class="btn btn-orange" href="{{ url_for('circulation.borrow') }}">Borrow</a>
+      <a class="btn btn-dark" href="{{ url_for('circulation.return_book') }}">Return</a></div></div>
+  </div>
+  <div class="tile" style="margin-top:14px;background:#f0f7ff;border-color:#dbeafe">
+    <p class="title" style="color:#2563eb">📊 Reports</p>
+    <p class="muted" style="margin-bottom:12px">See daily activity, overdue learners and subject stock. Every report downloads as Excel or PDF.</p>
+    <div class="grid3" style="gap:8px">
+      <a class="btn btn-light" href="{{ url_for('reports.view', kind='daily') }}">Daily report</a>
+      <a class="btn btn-light" href="{{ url_for('reports.view', kind='overdue') }}">Overdue report</a>
+      <a class="btn btn-light" href="{{ url_for('reports.view', kind='subjects') }}">Subjects report</a>
+    </div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h3>🔔 Notifications {% if notif_count > 0 %}<span class="badge badge-red">{{ notif_count }}</span>{% endif %}</h3>
+    <p class="muted" style="margin:4px 0 12px">Shown when learners borrow books themselves with the scanner.</p>
+    {% for n in notifs %}
+      <div style="background:#eff6ff;padding:10px;border-radius:8px;margin-bottom:8px;border-left:3px solid #2563eb">
+        <p style="font-size:13px">{{ n.message }}</p><p class="small muted">{{ n.dateCreated }}</p></div>
+    {% else %}
+      <p class="empty">No new activity.</p>
+    {% endfor %}
+    {% if notifs %}
+    <form method="post" action="{{ url_for('dashboard.mark_read') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-dark btn-block" type="submit">Mark all as read</button></form>
+    {% endif %}
+  </div>
+  <div class="card">
+    <h3>📋 Recent activity</h3>
+    <p class="muted" style="margin:4px 0 12px">The five latest borrowings.</p>
+    {% for r in recent %}
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9">
+        <div><p style="font-size:13px;font-weight:600">{{ r.fullName }}</p><p class="small muted">{{ r.title }}</p></div>
+        <p class="small muted">{{ r.borrowDate }}</p></div>
+    {% else %}
+      <p class="empty">No borrowing yet. Use Borrow to lend the first book.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <h3>Books per subject</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Subject</th><th>Books</th></tr>
+    {% for s in subjects %}<tr><td>{{ s.categoryName }}</td><td>{{ s.total }}</td></tr>{% endfor %}
+  </table></div>
+</div>
+{% endblock %}
